@@ -56,6 +56,25 @@ def affichage(images, labels, mapping=None, n_images=10):
     plt.tight_layout()
     plt.show()
 
+def preprocess_data():
+    """
+    Charge et prétraite les données EMNIST
+    """
+    preprocessor = DP(
+        train_images_path='data/gzip/emnist-balanced-train-images-idx3-ubyte.gz',
+        train_labels_path='data/gzip/emnist-balanced-train-labels-idx1-ubyte.gz',
+        test_images_path='data/gzip/emnist-balanced-test-images-idx3-ubyte.gz',
+        test_labels_path='data/gzip/emnist-balanced-test-labels-idx1-ubyte.gz'
+    )
+    preprocessor.load_data().normalize().reshape_for_cnn()
+
+    X_train, y_train = preprocessor.get_train_data()
+    X_test, y_test = preprocessor.get_test_data()
+
+    print(f"✅ Données prêtes pour CNN : {X_train.shape}")
+
+    return preprocessor
+
 if __name__ == "__main__":
     images = load_images('data/gzip/emnist-balanced-train-images-idx3-ubyte.gz')
     labels = load_labels('data/gzip/emnist-balanced-train-labels-idx1-ubyte.gz')
@@ -75,5 +94,8 @@ if __name__ == "__main__":
 
         # Afficher les images avec les vrais caractères
     affichage(images, labels, mapping)
+
+    # Prétraiter les données pour CNN
+    preprocessor = preprocess_data()
 
 
