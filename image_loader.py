@@ -54,3 +54,29 @@ def load_labels(path):
         labels = np.frombuffer(buffer, dtype=np.uint8)
 
     return labels
+
+
+def load_mapping(path):
+    """
+    Charge la correspondance label numérique -> caractère
+
+    Args:
+        path (str): Chemin vers le fichier de mapping
+
+    Returns:
+        dict: Dictionnaire {label: caractère}
+    """
+    mapping = {}
+    try:
+        with open(path, 'r') as f:
+            for line in f:
+                parts = line.strip().split()
+                if len(parts) == 2:
+                    label = int(parts[0])  # Label numérique (0-46)
+                    char_code = int(parts[1])  # Code ASCII du caractère
+                    mapping[label] = chr(char_code)  # Conversion en caractère
+    except FileNotFoundError:
+        print(f"⚠️  Fichier de mapping non trouvé : {path}")
+        return None
+
+    return mapping
