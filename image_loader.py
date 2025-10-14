@@ -12,18 +12,25 @@ def load_images(path):
         path (str): Chemin vers le fichier .gz des images
 
     Returns:
-        numpy.ndarray: Images de forme (n_images, 28, 28)
+        numpy.ndarray: Images de forme (n_images, 28, 28, 1)
     """
     with gzip.open(path, 'rb') as f:
         # Ignorer l'en-tête (16 premiers octets)
         f.read(16)
 
-        # Lire les données sous forme de tableau numpy
         buffer = f.read()
         data = np.frombuffer(buffer, dtype=np.uint8)
 
-        # Reshape selon le format MNIST : (nombre_images, 28, 28)
+        # Reshape selon le format MNIST
         images = data.reshape(-1, 28, 28)
+
+        # Prétraitement pour normaliser
+        # & pour ajouter une dimension de canal
+        images = images.astype('float32') / 255.0
+
+        # Ajout d'une dimension de canal
+        # C'est plus pratique pour les réseaux de neurones
+        images = np.expand_dims(images, axis=-1)  # (n, 28, 28) -> (n, 28, 28, 1)
 
     return images
 
