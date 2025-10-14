@@ -8,11 +8,21 @@ Il s'agit d'une application de reconnaissance de forme, spécifiquement conçue 
 L'application traite des images en niveaux de gris de 28x28 pixels, typiques des ensembles de données MNIST.
 
 ## Les données à utiliser
-Les données utilisées proviennent de l'ensemble de données MNIST, qui contient des images de chiffres manuscrits (0-9) et peut être étendu pour inclure des lettres manuscrites (A-Z).
+Les données utilisées proviennent de l'ensemble de données MNIST du NIST, qui contient des images de chiffres manuscrits (0-9) et peut être étendu pour inclure des lettres manuscrites (A-Z).
 > Data source:
 Cohen, G., Afshar, S., Tapson, J., & van Schaik, A. (2017).
 EMNIST: an extension of MNIST to handwritten letters.
 Retrieved from http://arxiv.org/abs/1702.05373
+
+Pour plus de précision, il y a plusieurs jeux de données disponibles:
+- **EMNIST By Class**: 814,255 images de 62 classes (chiffres et lettres majuscules/minuscules).
+- **EMNIST By Merge**: 814,255 images de 47 classes (chiffres et lettres majuscules/minuscules fusionnées).
+- **EMNIST Balanced**: 131,600 images de 47 classes (chiffres et lettres majuscules/minuscules équilibrées).
+- **EMNIST Letters**: 103,600 images de 37 classes (fusion majuscules/minuscules).
+- **EMNIST Digits**: 280,000 images de 10 classes (chiffres uniquement).
+- **EMNIST MNIST**: 70,000 images de 10 classes (chiffres uniquement, similaire à MNIST).
+
+Le jeu de données que nous utiliserons pour l'application sera **EMNIST Balanced**, qui offre un bon compromis entre la diversité des classes et la taille du dataset.
 
 ## Les paramètres à extraire de chaque image
 Les paramètres extraits de chaque image incluent les pixels individuels, qui sont utilisés comme entrées pour le modèle de réseau de neurones convolutifs.
