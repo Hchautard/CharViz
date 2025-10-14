@@ -10,6 +10,8 @@ from preprocessing import DataPreprocessor as DP
 matplotlib.use('TkAgg')
 
 from image_loader import load_images,load_labels, load_mapping
+from model import create_cnn_model
+from train import train_model, plot_training_history, save_model
 
 
 def affichage(images, labels, mapping=None, n_images=10):
@@ -56,33 +58,60 @@ def affichage(images, labels, mapping=None, n_images=10):
     plt.tight_layout()
     plt.show()
 
+
 def preprocess_data():
     """
     Charge et prétraite les données EMNIST
+
+    Returns:
+        tuple: (X_train, y_train, X_test, y_test)
     """
+    print("\n" + "=" * 60)
+    print("📋 PRÉTRAITEMENT DES DONNÉES")
+    print("=" * 60 + "\n")
+
     preprocessor = DP(
         train_images_path='data/gzip/emnist-balanced-train-images-idx3-ubyte.gz',
         train_labels_path='data/gzip/emnist-balanced-train-labels-idx1-ubyte.gz',
         test_images_path='data/gzip/emnist-balanced-test-images-idx3-ubyte.gz',
         test_labels_path='data/gzip/emnist-balanced-test-labels-idx1-ubyte.gz'
     )
-    preprocessor.load_data().normalize().reshape_for_cnn()
+
+    # ⚠️ ORDRE IMPORTANT : load_data → correct_orientation → normalize → reshape
+    preprocessor.load_data() \
+        .correct_emnist_orientation() \
+        .normalize() \
+        .reshape_for_cnn()
 
     X_train, y_train = preprocessor.get_train_data()
     X_test, y_test = preprocessor.get_test_data()
 
-    print(f"✅ Données prêtes pour CNN : {X_train.shape}")
+    print(f"\n✅ Données prêtes pour CNN : {X_train.shape}")
 
-    return preprocessor
+    return X_train, y_train, X_test, y_test
+
 
 if __name__ == "__main__":
-    images = load_images('data/gzip/emnist-balanced-train-images-idx3-ubyte.gz')
+    images_raw = load_images('data/gzip/emnist-balanced-train-images-idx3-ubyte.gz')
     labels = load_labels('data/gzip/emnist-balanced-train-labels-idx1-ubyte.gz')
     mapping = load_mapping('data/gzip/emnist-balanced-mapping.txt')
 
+    images_corrected = np.array([np.fliplr(np.rot90(np.rot90(np.rot90(img, k=1)))) for img in images_raw[:10]])
+
+    print("\n🔍 Comparaison AVANT/APRÈS correction :")
+    print("=" * 60)
+
+    # Afficher AVANT correction
+    print("\n❌ AVANT correction (images mal orientées) :")
+    affichage(images_raw, labels, mapping, n_images=5)
+
+    # Afficher APRÈS correction
+    print("\n✅ APRÈS correction (images bien orientées) :")
+    affichage(images_corrected, labels[:10], mapping, n_images=5)
+
     # Vérifier le chargement
-    print(f"✅ {images.shape[0]} images chargées")
-    print(f"✅ Taille de chaque image : {images.shape[1]}x{images.shape[2]} pixels")
+    print(f"✅ {images_corrected.shape[0]} images chargées")
+    print(f"✅ Taille de chaque image : {images_corrected.shape[1]}x{images_corrected.shape[2]} pixels")
     print(f"✅ {labels.shape[0]} labels chargés")
 
     if mapping:
@@ -93,9 +122,18 @@ if __name__ == "__main__":
                 print(f"   Label {i} → '{mapping[i]}'")
 
         # Afficher les images avec les vrais caractères
-    affichage(images, labels, mapping)
+    affichage(images_corrected, labels, mapping)
 
     # Prétraiter les données pour CNN
-    preprocessor = preprocess_data()
+    X_train, y_train, X_test, y_test = preprocess_data()
+
+    # Créer le modèle CNN
+    model, history = train_model(X_train, y_train, X_test, y_test,
+                                epochs=10, batch_size=128)
+    save_model(model, 'emnist_cnn_model.keras')
+    plot_training_history(history)
+
+
+
 
 

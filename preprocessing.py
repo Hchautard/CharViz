@@ -87,6 +87,21 @@ class DataPreprocessor:
         """
         return self.X_test, self.y_test
 
+    def correct_emnist_orientation(self):
+        """
+        Corrige l'orientation des images EMNIST
+        Les images EMNIST doivent être transposées et inversées verticalement
+        """
+        print("🔧 Correction de l'orientation EMNIST...")
+
+        # Pour chaque image : transposer et inverser verticalement
+        self.X_train = np.array([np.fliplr(np.rot90(img, k=1)) for img in self.X_train])
+        self.X_test = np.array([np.fliplr(np.rot90(img, k=1)) for img in self.X_test])
+
+        print("✅ Orientation corrigée")
+
+        return self
+
 def create_validation_split(X_train, y_train, validation_ratio=0.1):
     """
     Crée un ensemble de validation à partir des données d'entraînement
@@ -118,3 +133,4 @@ def create_validation_split(X_train, y_train, validation_ratio=0.1):
     print(f"✅ Split validation : {len(X_train_new)} train / {len(X_val)} validation")
 
     return X_train_new, y_train_new, X_val, y_val
+
