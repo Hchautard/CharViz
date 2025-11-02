@@ -74,8 +74,6 @@ class EMNISTPredictor:
         else:
             img = image
 
-        # ❌ PAS de correction d'orientation pour images custom !
-
         # Normaliser si nécessaire
         if img.max() > 1.0:
             img = img.astype('float32') / 255.0
@@ -139,18 +137,17 @@ class EMNISTPredictor:
             true_label: Label réel (optionnel)
             apply_emnist_correction: Si True, applique la correction EMNIST
         """
-        # Faire la prédiction
+
         predicted_class, predicted_char, confidence = self.predict_single(
             image, is_emnist=is_emnist
         )
 
-        # Créer la figure avec une seule image
+        # Créer la figure
         fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
         # Afficher l'image (sans correction supplémentaire pour l'affichage)
         ax.imshow(image.squeeze(), cmap='gray')
 
-        # Titre avec prédiction
         title = f"Prédiction: '{predicted_char}' (classe {predicted_class})\n"
         title += f"Confiance: {confidence * 100:.2f}%"
 
