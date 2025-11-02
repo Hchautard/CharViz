@@ -77,16 +77,29 @@ def preprocess_data():
         test_labels_path='data/gzip/emnist-balanced-test-labels-idx1-ubyte.gz'
     )
 
-    # ⚠️ ORDRE IMPORTANT : load_data → correct_orientation → normalize → reshape
+    # ⚠️ ORDRE CRITIQUE : load → correct → normalize → reshape
     preprocessor.load_data() \
         .correct_emnist_orientation() \
         .normalize() \
-        .reshape_for_cnn()
+        .reshape_for_cnn() \
+        .get_data_info()
 
     X_train, y_train = preprocessor.get_train_data()
     X_test, y_test = preprocessor.get_test_data()
 
-    print(f"\n✅ Données prêtes pour CNN : {X_train.shape}")
+    # VÉRIFICATION DE SÉCURITÉ
+    print("\n🔍 Vérification finale avant entraînement :")
+    print(f"   X_train shape: {X_train.shape}")
+    print(f"   X_train min/max: {X_train.min():.3f} / {X_train.max():.3f}")
+    print(f"   y_train shape: {y_train.shape}")
+    print(f"   y_train min/max: {y_train.min()} / {y_train.max()}")
+
+    # Assertions de sécurité
+    assert len(X_train.shape) == 4, f"❌ Mauvaise forme : {X_train.shape}"
+    assert X_train.shape[-1] == 1, f"❌ Mauvais nombre de canaux : {X_train.shape[-1]}"
+    assert X_train.max() > 0, "❌ Images toutes noires !"
+
+    print("✅ Toutes les vérifications passées !\n")
 
     return X_train, y_train, X_test, y_test
 
