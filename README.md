@@ -1,6 +1,24 @@
 # Application de reconnaissance de forme
 Ce projet est une application de reconnaissance de chiffres et de lettres manuscrites, qui utilise MNIST et un réseau de neurones convolutifs (CNN) pour la classification des images.
 
+## Manuel d'utilisation
+### Prérequis
+Commande pour installer les bibliothèques nécessaires:
+```bash
+pip install tensorflow numpy matplotlib pillow
+```
+### ATTENTION
+Pas obligatoire de lancer le script `main.py` car le modèle pré-entraîné est déjà fourni.
+
+### Exécution de l'application
+Pour exécuter l'application, utilisez la commande suivante:
+```bash
+python recognize.py
+```
+Un menu interactif vous permettra d'utiliser des données du dataset EMNIST ou de charger vos propres images manuscrites pour la reconnaissance.
+
+
+
 ## Le type d'application
 Il s'agit d'une application de reconnaissance de forme, spécifiquement conçue pour identifier des chiffres et des lettres manuscrites.
 
