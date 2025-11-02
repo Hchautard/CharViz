@@ -18,27 +18,25 @@ def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=128):
         tuple: (model, history)
     """
     print("\n" + "=" * 60)
-    print("🧠 CRÉATION ET ENTRAÎNEMENT DU MODÈLE")
+    print("CRÉATION ET ENTRAÎNEMENT DU MODÈLE")
     print("=" * 60 + "\n")
 
     # Créer le modèle
     model = create_cnn_model(input_shape=(28, 28, 1), num_classes=47)
 
     # Afficher l'architecture
-    print("📐 Architecture du modèle :\n")
+    print("Architecture du modèle :\n")
     model.summary()
 
     # Compiler le modèle
-    print("\n🔧 Compilation du modèle...")
     model.compile(
         optimizer='adam',
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
-    print("✅ Modèle compilé\n")
 
     # Entraîner le modèle
-    print(f"🏋️  Début de l'entraînement ({epochs} epochs, batch_size={batch_size})...\n")
+    print(f"🏋Début de l'entraînement ({epochs} epochs, batch_size={batch_size})...\n")
     history = model.fit(
         X_train, y_train,
         epochs=epochs,
@@ -47,13 +45,13 @@ def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=128):
         verbose=1
     )
 
-    print("\n✅ Entraînement terminé !")
+    print("\n Entraînement terminé !")
 
     # Évaluer sur le test set
-    print("\n📊 Évaluation sur le test set...")
+    print("\n Évaluation sur le test set...")
     test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
 
-    print(f"\n🎯 Résultats finaux :")
+    print(f"\n Résultats finaux :")
     print(f"   Loss (test): {test_loss:.4f}")
     print(f"   Accuracy (test): {test_accuracy * 100:.2f}%")
 
@@ -68,7 +66,7 @@ def plot_training_history(history):
         history: Historique retourné par model.fit()
     """
     print("\n" + "=" * 60)
-    print("📈 VISUALISATION DES COURBES D'APPRENTISSAGE")
+    print("VISUALISATION DES COURBES D'APPRENTISSAGE")
     print("=" * 60 + "\n")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
@@ -93,7 +91,6 @@ def plot_training_history(history):
 
     plt.tight_layout()
     plt.savefig('training_history.png', dpi=150, bbox_inches='tight')
-    print("✅ Graphique sauvegardé : training_history.png")
     plt.show()
 
 
@@ -106,8 +103,8 @@ def save_model(model, filepath='emnist_cnn_model.keras'):
         filepath: Chemin du fichier de sauvegarde
     """
     print("\n" + "=" * 60)
-    print("💾 SAUVEGARDE DU MODÈLE")
+    print("SAUVEGARDE DU MODÈLE")
     print("=" * 60 + "\n")
 
     model.save(filepath)
-    print(f"✅ Modèle sauvegardé : {filepath}\n")
+    print(f"Modèle sauvegardé : {filepath}\n")
