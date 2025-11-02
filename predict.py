@@ -1,13 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
 from tensorflow import keras
+from image_loader import load_images, load_labels, load_mapping
+
 import matplotlib
 
 matplotlib.use('TkAgg')
 
-from image_loader import load_images, load_labels, load_mapping
-from preprocessing import DataPreprocessor as DP
 
 
 class EMNISTPredictor:
@@ -21,16 +20,16 @@ class EMNISTPredictor:
         Initialise le prédicteur
         """
         print("\n" + "=" * 60)
-        print("🔮 CHARGEMENT DU PRÉDICTEUR")
+        print("CHARGEMENT DU PRÉDICTEUR")
         print("=" * 60 + "\n")
 
-        print(f"📂 Chargement du modèle : {model_path}")
+        print(f"Chargement du modèle : {model_path}")
         self.model = keras.models.load_model(model_path)
-        print("✅ Modèle chargé avec succès\n")
+        print("Modèle chargé avec succès\n")
 
-        print(f"📂 Chargement du mapping : {mapping_path}")
+        print(f"Chargement du mapping : {mapping_path}")
         self.mapping = load_mapping(mapping_path)
-        print(f"✅ {len(self.mapping)} classes chargées\n")
+        print(f"{len(self.mapping)} classes chargées\n")
 
     def preprocess_emnist_image(self, image):
         """
@@ -47,10 +46,10 @@ class EMNISTPredictor:
         else:
             img = image
 
-        # ✅ Correction d'orientation EMNIST (UNIQUEMENT pour dataset EMNIST)
+        # Correction d'orientation (UNIQUEMENT pour dataset EMNIST)
         img = np.rot90(np.fliplr(img))
 
-        # Normaliser si nécessaire
+        # Normaliser
         if img.max() > 1.0:
             img = img.astype('float32') / 255.0
 
@@ -133,31 +132,23 @@ class EMNISTPredictor:
 
     def visualize_prediction(self, image, true_label=None, is_emnist=True):
         """
-        Visualise une prédiction avec l'image et les probabilités
+        Visualise une prédiction avec l'image
 
         Args:
             image: Image à prédire (28, 28)
             true_label: Label réel (optionnel)
-            is_emnist: True si image du dataset EMNIST, False si custom
+            apply_emnist_correction: Si True, applique la correction EMNIST
         """
-        # Faire la prédiction avec le bon preprocessing
+        # Faire la prédiction
         predicted_class, predicted_char, confidence = self.predict_single(
             image, is_emnist=is_emnist
         )
 
-        # Obtenir toutes les probabilités
-        if is_emnist:
-            img_processed = self.preprocess_emnist_image(image)
-        else:
-            img_processed = self.preprocess_custom_image(image)
+        # Créer la figure avec une seule image
+        fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
-        predictions = self.model.predict(img_processed, verbose=0)[0]
-
-        # Créer la figure
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
-
-        # Afficher l'image
-        ax1.imshow(np.rot90(np.fliplr(image.squeeze())), cmap='gray')
+        # Afficher l'image (sans correction supplémentaire pour l'affichage)
+        ax.imshow(image.squeeze(), cmap='gray')
 
         # Titre avec prédiction
         title = f"Prédiction: '{predicted_char}' (classe {predicted_class})\n"
@@ -168,29 +159,11 @@ class EMNISTPredictor:
             is_correct = (predicted_class == true_label)
             color = 'green' if is_correct else 'red'
             title += f"\nVérité: '{true_char}' (classe {true_label})"
-            ax1.set_title(title, fontsize=12, fontweight='bold', color=color)
+            ax.set_title(title, fontsize=14, fontweight='bold', color=color)
         else:
-            ax1.set_title(title, fontsize=12, fontweight='bold')
+            ax.set_title(title, fontsize=14, fontweight='bold')
 
-        ax1.axis('off')
-
-        # Afficher les top 5 prédictions
-        top5_indices = np.argsort(predictions)[-5:][::-1]
-        top5_probs = predictions[top5_indices]
-        top5_chars = [self.mapping.get(i, '?') for i in top5_indices]
-
-        colors = ['green' if i == predicted_class else 'skyblue' for i in top5_indices]
-
-        ax2.barh(range(5), top5_probs, color=colors)
-        ax2.set_yticks(range(5))
-        ax2.set_yticklabels([f"'{c}' ({i})" for c, i in zip(top5_chars, top5_indices)])
-        ax2.set_xlabel('Probabilité', fontsize=11)
-        ax2.set_title('Top 5 prédictions', fontsize=12, fontweight='bold')
-        ax2.set_xlim(0, 1)
-
-        for i, (prob, idx) in enumerate(zip(top5_probs, top5_indices)):
-            ax2.text(prob + 0.02, i, f'{prob * 100:.1f}%',
-                     va='center', fontsize=10)
+        ax.axis('off')
 
         plt.tight_layout()
         plt.show()

@@ -15,16 +15,16 @@ def create_cnn_model(input_shape=(28, 28, 1), num_classes=47):
         model: Modèle CNN compilé
     """
     model = keras.Sequential([
-        # Bloc 1 : Détection des formes de base
+        # Détection des formes de base
         layers.Conv2D(32, kernel_size=(3, 3), activation='relu',
                       input_shape=input_shape),
         layers.MaxPooling2D(pool_size=(2, 2)),
 
-        # Bloc 2 : Détection de motifs plus complexes
+        # Détection de motifs plus complexes
         layers.Conv2D(64, kernel_size=(3, 3), activation='relu'),
         layers.MaxPooling2D(pool_size=(2, 2)),
 
-        # Bloc 3 : Caractéristiques de haut niveau
+        # Caractéristiques de haut niveau
         layers.Conv2D(128, kernel_size=(3, 3), activation='relu'),
 
         # Aplatissement : passage de 2D à 1D

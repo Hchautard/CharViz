@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from model import create_cnn_model
 
 def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=128):
@@ -35,8 +34,8 @@ def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=128):
         metrics=['accuracy']
     )
 
-    # Entraîner le modèle
-    print(f"🏋Début de l'entraînement ({epochs} epochs, batch_size={batch_size})...\n")
+    # Entraînement
+    print(f"Début de l'entraînement ({epochs} epochs, batch_size={batch_size})...\n")
     history = model.fit(
         X_train, y_train,
         epochs=epochs,
@@ -45,15 +44,13 @@ def train_model(X_train, y_train, X_test, y_test, epochs=10, batch_size=128):
         verbose=1
     )
 
-    print("\n Entraînement terminé !")
-
-    # Évaluer sur le test set
-    print("\n Évaluation sur le test set...")
-    test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
-
-    print(f"\n Résultats finaux :")
-    print(f"   Loss (test): {test_loss:.4f}")
-    print(f"   Accuracy (test): {test_accuracy * 100:.2f}%")
+    # # Évaluer sur le test set
+    # print("\n Évaluation sur le test set...")
+    # test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
+    #
+    # print(f"\n Résultats finaux :")
+    # print(f"   Loss (test): {test_loss:.4f}")
+    # print(f"   Accuracy (test): {test_accuracy * 100:.2f}%")
 
     return model, history
 

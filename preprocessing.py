@@ -18,7 +18,7 @@ class DataPreprocessor:
 
     def load_data(self):
         """Charge les données depuis les fichiers .gz"""
-        print("📂 Chargement des données...")
+        print("Chargement des données...")
 
         self.X_train = load_images(self.train_images_path)
         self.y_train = load_labels(self.train_labels_path)

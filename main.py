@@ -11,7 +11,6 @@ from preprocessing import DataPreprocessor as DP
 matplotlib.use('TkAgg')
 
 from image_loader import load_images, load_labels, load_mapping
-from model import create_cnn_model
 from train import train_model, plot_training_history, save_model
 
 
@@ -53,7 +52,7 @@ def preprocess_data():
     Charge et prétraite les données EMNIST
     """
     print("\n" + "=" * 60)
-    print("📋 PRÉTRAITEMENT DES DONNÉES")
+    print("PRÉTRAITEMENT DES DONNÉES")
     print("=" * 60 + "\n")
 
     preprocessor = DP(
@@ -74,24 +73,22 @@ def preprocess_data():
     X_test, y_test = preprocessor.get_test_data()
 
     # VÉRIFICATION
-    print("\n🔍 Vérification avant entraînement :")
+    print("\nVérification avant entraînement :")
     print(f"   X_train shape: {X_train.shape}")
     print(f"   X_train min/max: {X_train.min():.3f} / {X_train.max():.3f}")
     print(f"   y_train shape: {y_train.shape}")
     print(f"   y_train min/max: {y_train.min()} / {y_train.max()}")
 
-    assert len(X_train.shape) == 4, f"❌ Mauvaise forme : {X_train.shape}"
-    assert X_train.shape[-1] == 1, f"❌ Mauvais nombre de canaux : {X_train.shape[-1]}"
-    assert X_train.max() > 0, "❌ Images toutes noires !"
-
-    print("✅ Toutes les vérifications passées !\n")
+    assert len(X_train.shape) == 4, f"Mauvaise forme : {X_train.shape}"
+    assert X_train.shape[-1] == 1, f"Mauvais nombre de canaux : {X_train.shape[-1]}"
+    assert X_train.max() > 0, "Images toutes noires !"
 
     return X_train, y_train, X_test, y_test
 
 
 if __name__ == "__main__":
     print("\n" + "=" * 60)
-    print("🚀 PROJET DE RECONNAISSANCE DE CARACTÈRES EMNIST")
+    print("PROJET DE RECONNAISSANCE DE CARACTÈRES EMNIST")
     print("=" * 60 + "\n")
 
     # Charger quelques images pour visualisation
@@ -103,18 +100,18 @@ if __name__ == "__main__":
     # images_corrected = np.array([np.rot90(np.fliplr(img)) for img in images_raw[:10]])
     images_corrected = images_raw[:10]
 
-    print(f"✅ {images_corrected.shape[0]} images chargées")
-    print(f"✅ Taille : {images_corrected.shape[1]}x{images_corrected.shape[2]} pixels")
-    print(f"✅ {len(mapping)} classes chargées\n")
+    print(f"{images_corrected.shape[0]} images chargées")
+    print(f"Taille : {images_corrected.shape[1]}x{images_corrected.shape[2]} pixels")
+    print(f"{len(mapping)} classes chargées\n")
 
-    # Afficher quelques exemples
-    print("🖼️  Affichage de 10 exemples corrigés...")
-    affichage(images_corrected, labels[:10], mapping)
+    # # Afficher quelques exemples
+    # print("🖼️  Affichage de 10 exemples corrigés...")
+    # affichage(images_corrected, labels[:10], mapping)
 
-    # Prétraiter toutes les données pour CNN
+    # Prétraitement
     X_train, y_train, X_test, y_test = preprocess_data()
 
-    # Entraîner le modèle
+    # Entraînement
     model, history = train_model(
         X_train, y_train,
         X_test, y_test,
@@ -125,8 +122,8 @@ if __name__ == "__main__":
     # Sauvegarder
     save_model(model, 'emnist_cnn_model.keras')
 
-    # Visualiser les courbes
-    plot_training_history(history)
+    # # Visualiser les courbes
+    # plot_training_history(history)
 
     print("\n" + "=" * 60)
     print("✅ ENTRAÎNEMENT TERMINÉ")
